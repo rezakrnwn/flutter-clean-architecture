@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_clean_architecture/common/execptions/database_exception.dart';
+import 'package:flutter_clean_architecture/common/mappers/auth_mapper.dart';
 import 'package:flutter_clean_architecture/feature/auth/data/data_sources/auth_local_data_source.dart';
-import 'package:flutter_clean_architecture/feature/auth/data/models/user_model.dart';
+import 'package:flutter_clean_architecture/feature/auth/domain/entities/user.dart';
 import 'package:flutter_clean_architecture/feature/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -12,10 +13,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }) : _authLocalDataSource = authLocalDataSource;
 
   @override
-  Either<Exception, UserModel> getUser(String username)  {
+  Either<Exception, User> getUser(String username)  {
     try {
       final result = _authLocalDataSource.getUser(username);
-      return Right(result);
+      return Right(AuthMapper.userModelToUserDomain(result));
     } on DatabaseException catch (e) {
       return Left(DatabaseException(message: e.message));
     }

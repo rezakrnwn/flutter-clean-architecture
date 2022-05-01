@@ -1,8 +1,8 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_clean_architecture/common/execptions/database_exception.dart';
 import 'package:flutter_clean_architecture/feature/auth/data/data_sources/auth_local_data_source.dart';
 import 'package:flutter_clean_architecture/feature/auth/data/models/user_model.dart';
 import 'package:flutter_clean_architecture/feature/auth/data/repositories/auth_repository_impl.dart';
+import 'package:flutter_clean_architecture/feature/auth/domain/entities/user.dart';
 import 'package:flutter_clean_architecture/feature/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -24,11 +24,15 @@ void main() {
     // arrange
     String username = "admin";
     UserModel dummyUserModel = UserModel(username: username, password: "123");
+    User dummyUserEntity = User(
+      username: dummyUserModel.username,
+      password: dummyUserModel.password,
+    );
     when(localDataSource.getUser(username)).thenAnswer((_) => dummyUserModel);
     // act
     final result = repository.getUser(username);
     // assert
-    expect(result.toOption().toNullable(), dummyUserModel);
+    expect(result.toOption().toNullable(), dummyUserEntity);
   });
 
   test('should throw exception when user data is not found', () {

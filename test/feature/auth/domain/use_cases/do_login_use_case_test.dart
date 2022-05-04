@@ -22,37 +22,35 @@ void main() {
 
   test('should return user entity when username and password are equals', () {
     // arrange
-    String username = "admin";
-    String password = "123";
+    final params = DoLoginParams(username: "admin", password: "123");
     User dummyUserEntity = User(
-      username: username,
-      password: password,
+      username: params.username,
+      password: params.password,
     );
-    when(authRepository.getUser(username))
+    when(authRepository.getUser(params.username))
         .thenAnswer((_) => Right(dummyUserEntity));
     // act
-    final result = doLoginUseCase(username: username, password: password);
+    final result = doLoginUseCase(params: params);
     // assert
-    verify(authRepository.getUser(username));
+    verify(authRepository.getUser(params.username));
     expect(result.isRight(), true);
     expect(result.toOption().toNullable(), dummyUserEntity);
   });
 
   test('should throw exception when password is incorrect', () {
     // arrange
-    String username = "admin";
-    String password = "222";
     String correctPassword = "123";
+    final params = DoLoginParams(username: "admin", password: "222");
     User dummyUserEntity = User(
-      username: username,
+      username: params.username,
       password: correctPassword,
     );
-    when(authRepository.getUser(username))
+    when(authRepository.getUser(params.username))
         .thenAnswer((_) => Right(dummyUserEntity));
     // act
-    final result = doLoginUseCase(username: username, password: password);
+    final result = doLoginUseCase(params: params);
     // assert
-    verify(authRepository.getUser(username));
+    verify(authRepository.getUser(params.username));
     expect(result.isLeft(), true);
     expect(result.swap().toOption().toNullable(),
         const DatabaseException(message: "Password is incorrect"));
@@ -60,14 +58,13 @@ void main() {
 
   test('should throw exception when user not found', () {
     // arrange
-    String username = "reza";
-    String password = "222";
-    when(authRepository.getUser(username)).thenAnswer(
+    final params = DoLoginParams(username: "reza", password: "222");
+    when(authRepository.getUser(params.username)).thenAnswer(
         (_) => const Left(DatabaseException(message: "User not found")));
     // act
-    final result = doLoginUseCase(username: username, password: password);
+    final result = doLoginUseCase(params: params);
     // assert
-    verify(authRepository.getUser(username));
+    verify(authRepository.getUser(params.username));
     expect(result.isLeft(), true);
     expect(result.swap().toOption().toNullable(),
         const DatabaseException(message: "User not found"));

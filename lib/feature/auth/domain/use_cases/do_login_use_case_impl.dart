@@ -12,17 +12,29 @@ class DoLoginUseCaseImpl implements DoLoginUseCase {
   }) : _authRepository = authRepository;
 
   @override
-  Either<Exception, User> call({required String username, required String password}) {
-    final result = _authRepository.getUser(username);
+  Either<Exception, User> call({
+    required DoLoginParams params,
+  }) {
+    final result = _authRepository.getUser(params.username);
 
     return result.fold((fail) {
       return Left(fail);
     }, (user) {
-      if (user.password == password) {
+      if (params.password == user.password) {
         return Right(user);
       }
 
       return const Left(DatabaseException(message: "Password is incorrect"));
     });
   }
+}
+
+class DoLoginParams {
+  final String username;
+  final String password;
+
+  DoLoginParams({
+    required this.username,
+    required this.password,
+  });
 }

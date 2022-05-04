@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_clean_architecture/common/execptions/database_exception.dart';
 import 'package:flutter_clean_architecture/feature/auth/domain/entities/user.dart';
 import 'package:flutter_clean_architecture/feature/auth/domain/repositories/auth_repository.dart';
@@ -29,7 +30,7 @@ class DoLoginUseCaseImpl implements DoLoginUseCase {
   }
 }
 
-class DoLoginParams {
+class DoLoginParams extends Equatable {
   final String username;
   final String password;
 
@@ -37,4 +38,10 @@ class DoLoginParams {
     required this.username,
     required this.password,
   });
+
+  @override
+  List<Object?> get props => [
+        username,
+        password,
+      ];
 }

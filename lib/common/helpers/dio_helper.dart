@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 class DioHelper {
+  static const String apiKey = "a89c3d590e198d4223e7c48de054c21d";
   final String _baseUrl;
 
   Dio get dio => _getDio();
